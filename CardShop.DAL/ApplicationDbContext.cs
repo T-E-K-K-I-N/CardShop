@@ -13,7 +13,7 @@ namespace CardShop.DAL
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
-            
+            Database.EnsureCreated();
         }
 
         public DbSet<GraphicsCard> GraphicsCard { get; set; }

@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CardShop.DAL\CardShop.DAL.csproj" />
+    <ProjectReference Include="..\CardShop.Domain\CardShop.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

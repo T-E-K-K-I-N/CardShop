@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CardShop.DAL\CardShop.DAL.csproj" />
+    <ProjectReference Include="..\CardShop.Service\CardShop.Service.csproj" />
   </ItemGroup>
 
 </Project>
