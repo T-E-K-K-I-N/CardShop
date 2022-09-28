@@ -1,0 +1,20 @@
+﻿@model IEnumerable<CardShop.Domain.Models.GraphicsCard>
+
+
+@{
+	ViewBag.Title = "title";
+	Layout = "_Layout";
+}
+
+@foreach(var card in Model)
+{
+	<p>@card.Title</p>
+	<p>@card.Manufacturer</p>
+	<p>@card.Model</p>
+	<p>@card.Description</p>
+	<p>@card.FrequencyGPU</p>
+	<p>@card.MemoryCapacity</p>
+	<p>@card.MemoryType</p>
+	<p>@card.FrequencyMemory</p>
+	<p>@card.Price.ToString("c")</p>
+}

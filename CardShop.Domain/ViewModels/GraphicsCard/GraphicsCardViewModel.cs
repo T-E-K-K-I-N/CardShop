@@ -1,30 +1,29 @@
-﻿using CardShop.Domain.Enum;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CardShop.Domain.Models
+namespace CardShop.Domain.ViewModels.GraphicsCard
 {
-    public class GraphicsCard
+    public class GraphicsCardViewModel
     {
         public int Id { get; set; }
 
         /// <summary>
         /// Название видеокарты
         /// </summary>
-        [Required(ErrorMessage ="Отсутствует название видеокарты")]
-        [MinLength(5, ErrorMessage ="Название должно состоять минимум из 5 символов")]
-        [MaxLength(50, ErrorMessage ="Название должно состоять максимум из 50 символов")]
+        [Required(ErrorMessage = "Отсутствует название видеокарты")]
+        [MinLength(5, ErrorMessage = "Название должно состоять минимум из 5 символов")]
+        [MaxLength(50, ErrorMessage = "Название должно состоять максимум из 50 символов")]
         public string Title { get; set; }
 
         /// <summary>
         /// Производитель
         /// </summary>
-        [Required(ErrorMessage ="Отсутствует производитель видеокарты")]
-        public Manufacturer Manufacturer { get; set; }
+        [Required(ErrorMessage = "Отсутствует производитель видеокарты")]
+        public string Manufacturer { get; set; }
 
         /// <summary>
         /// Модель
@@ -45,14 +44,14 @@ namespace CardShop.Domain.Models
         /// Частота графического ядра
         /// </summary>
         [Required(ErrorMessage = "Отсутствует частота графического ядра видеокарты")]
-        [Range(1000,10000,ErrorMessage ="Частота графического ядра должна быть в пределе от 1000 до 10000 МГц")]
+        [Range(1000, 10000, ErrorMessage = "Частота графического ядра должна быть в пределе от 1000 до 10000 МГц")]
         public double FrequencyGPU { get; set; }
 
         /// <summary>
         /// Количество видеопамяти
         /// </summary>
         [Required(ErrorMessage = "Отсутствует объем видеопамяти")]
-        [Range(1,100, ErrorMessage = "Объем видеопамяти должен быть в пределе от 1 до 100 ГБ")]
+        [Range(1, 100, ErrorMessage = "Объем видеопамяти должен быть в пределе от 1 до 100 ГБ")]
         public double MemoryCapacity { get; set; }
 
         /// <summary>
@@ -76,7 +75,5 @@ namespace CardShop.Domain.Models
         [Required(ErrorMessage = "Отсутствует цена видеокарты")]
         [Range(0, 1000000, ErrorMessage = "Цена видеокарты должна быть в пределе от 0 до 1.000.000 ₽")]
         public decimal Price { get; set; }
-
     }
-
 }

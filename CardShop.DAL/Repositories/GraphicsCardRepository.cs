@@ -42,9 +42,16 @@ namespace CardShop.DAL.Repositories
             return await _db.GraphicsCard.FirstOrDefaultAsync(x => x.Title == title);
         }
 
-        public Task<List<GraphicsCard>> Select()
+        public async Task<List<GraphicsCard>> Select()
         {
-            return _db.GraphicsCard.ToListAsync();
+            return await _db.GraphicsCard.ToListAsync();
+        }
+
+        public async Task<GraphicsCard> Update(GraphicsCard entity)
+        {
+            _db.GraphicsCard.Update(entity);
+            await _db.SaveChangesAsync();
+            return entity;
         }
     }
 }

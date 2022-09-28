@@ -8,6 +8,7 @@ namespace CardShop.Domain.Enum
 {
     public enum StatusCode
     {
+        GraphicsCardNotFound = 0,
         OK = 200,
         NotFound = 404,
         InternalServerError = 500
