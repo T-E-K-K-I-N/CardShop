@@ -1,0 +1,35 @@
+﻿.paragraphLayout {
+    font-size: 16px;
+    font-family: Arial, serif;
+    font-weight: bold;
+    text-shadow: inherit;
+    color: black;
+    border: solid 2px;
+    margin: 5px;
+    border-radius: 10px;
+
+}
+
+.paragraphRightShadow {
+    font-size: 16px;
+    font-family: Arial, serif;
+    font-weight: bold;
+    text-shadow: inherit;
+    color: white;
+    border-bottom: 3px solid #fff;
+}
+
+.paragraphHome {
+    font-size: 16px;
+    font-family: Arial, serif;
+    font-weight: bold;
+    text-shadow: initial;
+    text-align: center;
+}
+
+.paragraphH3 {
+    text-align: center;
+    font-size: 23px;
+    color: white;
+    font-family: Impact, serif;
+}

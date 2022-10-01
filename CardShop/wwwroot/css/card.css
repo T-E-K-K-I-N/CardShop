@@ -1,0 +1,34 @@
+﻿.row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.card {
+    box-shadow: 4px 2px 2px 3px white;
+}
+
+.card-body {
+    background: black;
+    border: solid white 1px;
+}
+
+.card-title {
+    font-family: Arial, serif;
+    font-size: 15px;
+    color: white;
+}
+
+.card-buttons-group {
+    text-align: right;
+    padding: 10px;
+}
+
+.card-text {
+    color: white;
+}
+
+.card-link {
+    font-family: Arial, serif;
+    background: black;
+    color: orange;
+}

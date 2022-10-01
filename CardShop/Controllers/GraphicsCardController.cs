@@ -23,7 +23,7 @@ namespace CardShop.Controllers
             var response = await _graphicsCardService.GetGraphicsCards();
             if(response.StatusCode == Domain.Enum.StatusCode.OK)
             {
-                return View(response.Data);
+                return View(response.Data.ToList());
             }
             return RedirectToAction("Error");
         }
