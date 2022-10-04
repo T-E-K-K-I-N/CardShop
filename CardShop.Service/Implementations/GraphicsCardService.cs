@@ -1,5 +1,6 @@
 ﻿using CardShop.DAL.Interfaces;
 using CardShop.Domain.Enum;
+using CardShop.Domain.Extensions;
 using CardShop.Domain.Models;
 using CardShop.Domain.Responce;
 using CardShop.Domain.ViewModels.GraphicsCard;
@@ -26,7 +27,7 @@ namespace CardShop.Service.Implementations
         /// Возвращает объект "Видеокарта" с указанным Id
         /// </summary>
         /// <param name="id">Id видеокарты в БД</param>
-        public async Task<IBaseResponse<GraphicsCard>> GetGraphicsCard(int id)
+        public async Task<IBaseResponse<GraphicsCardViewModel>> GetGraphicsCard(int id)
         {
             var baseResponse = new BaseResponse<GraphicsCard>();
             try
@@ -34,20 +35,40 @@ namespace CardShop.Service.Implementations
                 var graphicsCard = await _graphicsCardRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
                 if (graphicsCard == null)
                 {
-                    baseResponse.Description = "Видеокарта не найдена";
-                    baseResponse.StatusCode = Domain.Enum.StatusCode.GraphicsCardNotFound;
-                    return baseResponse;
+                    return new BaseResponse<GraphicsCardViewModel>()
+                    {
+                        Description = "Видеокарта не найдена",
+                        StatusCode = Domain.Enum.StatusCode.GraphicsCardNotFound
+                    };
                 }
 
-                baseResponse.Data = graphicsCard;
-                baseResponse.StatusCode = Domain.Enum.StatusCode.OK;
-                return baseResponse;
+                var data = new GraphicsCardViewModel()
+                {
+                    Title = graphicsCard.Title,
+                    Manufacturer = graphicsCard.Manufacturer.GetDisplayName(),
+                    Model = graphicsCard.Model,
+                    Description = graphicsCard.Description,
+                    FrequencyGPU = graphicsCard.FrequencyGPU,
+                    MemoryCapacity = graphicsCard.MemoryCapacity,
+                    MemoryType = graphicsCard.MemoryType,
+                    FrequencyMemory = graphicsCard.FrequencyMemory,
+                    Price = graphicsCard.Price,
+                    Image = graphicsCard.Avatar
+                };
+
+                return new BaseResponse<GraphicsCardViewModel>()
+                {
+                    StatusCode = Domain.Enum.StatusCode.OK,
+                    Data = data
+                };
+
             }
             catch (Exception ex)
             { 
-                return new BaseResponse<GraphicsCard>()
+                return new BaseResponse<GraphicsCardViewModel>()
                 {
-                    Description = $"[GetGraphicsCard] : {ex.Message}"
+                    Description = $"[GetGraphicsCard] : {ex.Message}",
+                    StatusCode = StatusCode.InternalServerError
                 };
             }
         }
@@ -86,30 +107,33 @@ namespace CardShop.Service.Implementations
         /// <summary>
         /// Возвращает всю коллекцию объектов (Видеокарт)
         /// </summary>
-        public async Task<IBaseResponse<IEnumerable<GraphicsCard>>> GetGraphicsCards()
+        public IBaseResponse<List<GraphicsCard>> GetGraphicsCards()
         {
             var baseResponse = new BaseResponse<IEnumerable<GraphicsCard>>();
             try
             {
-                var graphicsCards =  await _graphicsCardRepository.GetAll().AllAsync<IEnumerable<GraphicsCard>>();
-
-                if (graphicsCards.Count == 0)
+                var graphicsCards = _graphicsCardRepository.GetAll().ToList();
+                if(!graphicsCards.Any())
                 {
-                    baseResponse.Description = "Найдено 0 элементов";
-                    baseResponse.StatusCode = Domain.Enum.StatusCode.GraphicsCardNotFound;
-                    return baseResponse;
+                    return new BaseResponse<List<GraphicsCard>>()
+                    {
+                        Description = "Найдено 0 элементов",
+                        StatusCode = Domain.Enum.StatusCode.GraphicsCardNotFound
+                    };
                 }
+                return new BaseResponse<List<GraphicsCard>>()
+                {
+                    Data = graphicsCards,
+                    StatusCode = Domain.Enum.StatusCode.OK
+                };
 
-                baseResponse.Data = graphicsCards;
-                baseResponse.StatusCode = Domain.Enum.StatusCode.OK;
-
-                return baseResponse;
             }
             catch (Exception ex)
             {
-                return new BaseResponse<IEnumerable<GraphicsCard>>()
+                return new BaseResponse<List<GraphicsCard>>()
                 {
-                    Description = $"[GetGraphicsCards] : {ex.Message}"
+                    Description = $"[GetGraphicsCards] : {ex.Message}",
+                    StatusCode = StatusCode.InternalServerError
                 };
             }
         }
@@ -117,7 +141,7 @@ namespace CardShop.Service.Implementations
         /// <summary>
         /// Создает объект "Видеокарта" исходя из предложенной модели
         /// </summary>
-        public async Task<IBaseResponse<GraphicsCardViewModel>> CreateGraphicsCard(GraphicsCardViewModel graphicsCardViewModel)
+        public async Task<IBaseResponse<GraphicsCardViewModel>> CreateGraphicsCard(GraphicsCardViewModel graphicsCardViewModel, byte[] imageData)
         {
             var baseResponse = new BaseResponse<GraphicsCardViewModel>();
             try
@@ -132,7 +156,8 @@ namespace CardShop.Service.Implementations
                     MemoryCapacity = graphicsCardViewModel.MemoryCapacity,
                     MemoryType = graphicsCardViewModel.MemoryType,
                     FrequencyMemory = graphicsCardViewModel.FrequencyMemory,
-                    Price = graphicsCardViewModel.Price
+                    Price = graphicsCardViewModel.Price,
+                    Avatar = imageData
                 };
 
                 await _graphicsCardRepository.Create(graphicsCard);
@@ -160,17 +185,26 @@ namespace CardShop.Service.Implementations
 
             try
             {
-                var graphicsCard =  await _graphicsCardRepository.Get(id);
+                var graphicsCard =  await _graphicsCardRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
                 if (graphicsCard == null)
                 {
-                    baseResponse.Description = "Видеокарта не найдена";
-                    baseResponse.StatusCode = Domain.Enum.StatusCode.GraphicsCardNotFound;
-                    return baseResponse;
+                    return new BaseResponse<bool>()
+                    {
+                        Description = "Видеокарта не найдена",
+                        StatusCode = Domain.Enum.StatusCode.GraphicsCardNotFound,
+                        Data = false
+                    };
                 }
 
                 await _graphicsCardRepository.Delete(graphicsCard);
-                baseResponse.StatusCode = Domain.Enum.StatusCode.OK;
-                return baseResponse;
+
+                return new BaseResponse<bool>()
+                {
+                    StatusCode = Domain.Enum.StatusCode.OK,
+                    Data = true
+                };
+
+                
             }
             catch (Exception ex)
             {
@@ -189,12 +223,14 @@ namespace CardShop.Service.Implementations
             var baseResponse = new BaseResponse<GraphicsCard>();
             try
             {
-                var graphicsCard = await _graphicsCardRepository.Get(id);
+                var graphicsCard = await _graphicsCardRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
                 if (graphicsCard == null)
                 {
-                    baseResponse.StatusCode = StatusCode.GraphicsCardNotFound;
-                    baseResponse.Description = "Видеокарта не найдена";
-                    return baseResponse;
+                    return new BaseResponse<GraphicsCard>()
+                    {
+                        Description = "Видеокарта не найдена",
+                        StatusCode = Domain.Enum.StatusCode.GraphicsCardNotFound,
+                    };
                 }
 
                 graphicsCard.Title = graphicsCardViewModel.Title;
@@ -209,15 +245,20 @@ namespace CardShop.Service.Implementations
 
                 await _graphicsCardRepository.Update(graphicsCard);
 
-                baseResponse.StatusCode = StatusCode.OK;
-                return baseResponse;
+                return new BaseResponse<GraphicsCard>()
+                {
+                    Data = graphicsCard,
+                    StatusCode = StatusCode.OK
+                };
+
             }
             catch (Exception ex)
             {
 
                 return new BaseResponse<GraphicsCard>()
                 {
-                    Description = $"[Edit] : {ex.Message}"
+                    Description = $"[Edit] : {ex.Message}",
+                    StatusCode = StatusCode.InternalServerError
                 };
             }
         }

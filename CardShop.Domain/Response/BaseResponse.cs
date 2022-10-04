@@ -28,6 +28,7 @@ namespace CardShop.Domain.Responce
 
     public interface IBaseResponse<T>
     {
+        string Description { get;}
         T Data { get; }
         StatusCode StatusCode { get; }
     }

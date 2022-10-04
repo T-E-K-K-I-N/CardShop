@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CardShop.DAL.Repositories
 {
-    public class GraphicsCardRepository : IGraphicsCardRepository
+    public class GraphicsCardRepository : IBaseRepository<GraphicsCard>
     {
         private readonly ApplicationDbContext _db;
 
@@ -18,34 +18,23 @@ namespace CardShop.DAL.Repositories
             _db = db;
         }
 
-        public async Task<bool> Create(GraphicsCard entity)
+        public async Task Create(GraphicsCard entity)
         {
             await  _db.GraphicsCard.AddAsync(entity);
             await _db.SaveChangesAsync();
-            return true;
         }
 
-        public async Task<bool> Delete(GraphicsCard entity)
+        public async Task Delete(GraphicsCard entity)
         {
             _db.GraphicsCard.Remove(entity);
             await _db.SaveChangesAsync();
-            return true;
         }
 
-        public async Task <GraphicsCard> Get(int id)
+        public IQueryable<GraphicsCard> GetAll()
         {
-            return await _db.GraphicsCard.FirstOrDefaultAsync(x => x.Id == id);
+            return _db.GraphicsCard;
         }
 
-        public async Task<GraphicsCard> GetByTitleAsync(string title)
-        {
-            return await _db.GraphicsCard.FirstOrDefaultAsync(x => x.Title == title);
-        }
-
-        public async Task<List<GraphicsCard>> Select()
-        {
-            return await _db.GraphicsCard.ToListAsync();
-        }
 
         public async Task<GraphicsCard> Update(GraphicsCard entity)
         {

@@ -11,13 +11,13 @@ namespace CardShop.Service.Interfaces
 {
     public interface IGraphicsCardService
     {
-        Task<IBaseResponse<IEnumerable<GraphicsCard>>> GetGraphicsCards();
+        IBaseResponse<List<GraphicsCard>> GetGraphicsCards();
 
-        Task<IBaseResponse<GraphicsCard>> GetGraphicsCard(int id);
+        Task<IBaseResponse<GraphicsCardViewModel>> GetGraphicsCard(int id);
 
         Task<IBaseResponse<GraphicsCard>> GetGraphicsCardByTitle(string title);
 
-        Task<IBaseResponse<GraphicsCardViewModel>> CreateGraphicsCard(GraphicsCardViewModel graphicsCardViewModel);
+        Task<IBaseResponse<GraphicsCardViewModel>> CreateGraphicsCard(GraphicsCardViewModel graphicsCardViewModel, byte[] imageData);
 
         Task<IBaseResponse<bool>> DeleteGraphicsCard(int id);
 

@@ -18,14 +18,14 @@ namespace CardShop.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetGraphicsCards()
+        public IActionResult GetGraphicsCards()
         {
-            var response = await _graphicsCardService.GetGraphicsCards();
+            var response = _graphicsCardService.GetGraphicsCards();
             if(response.StatusCode == Domain.Enum.StatusCode.OK)
             {
-                return View(response.Data.ToList());
+                return View(response.Data);
             }
-            return RedirectToAction("Error");
+            return RedirectToAction("Error", $"{response.Description}");
         }
 
         [HttpGet]
@@ -37,7 +37,7 @@ namespace CardShop.Controllers
             {
                 return View(response.Data);
             }
-            return RedirectToAction("Error");
+            return RedirectToAction("Error", $"{response.Description}");
         }
 
         [HttpGet]
@@ -49,7 +49,7 @@ namespace CardShop.Controllers
             {
                 return View(response.Data);
             }
-            return RedirectToAction("Error");
+            return RedirectToAction("Error", $"{response.Description}");
         }
 
         [Authorize(Roles ="Admin")]
@@ -60,15 +60,17 @@ namespace CardShop.Controllers
             {
                 return RedirectToAction("GetGraphicsCards");
             }
-            return RedirectToAction("Error");
+            return RedirectToAction("Error", $"{response.Description}");
         }
+
+        public IActionResult Compare() => PartialView();
 
         [HttpGet]
         public async Task<IActionResult> Save(int id)
         {
             if (id == 0)
             {
-                return View();
+                return PartialView();
             }
 
             var response = await _graphicsCardService.GetGraphicsCard(id);
@@ -76,8 +78,9 @@ namespace CardShop.Controllers
             {
                 return View(response.Data);
             }
+            ModelState.AddModelError("", response.Description);
 
-            return RedirectToAction("Error");
+            return PartialView();
         }
 
         [HttpPost]
@@ -88,15 +91,20 @@ namespace CardShop.Controllers
             {
                 if(model.Id == 0)
                 {
-                    
-                     await _graphicsCardService.CreateGraphicsCard(model);
+                    byte[] imageData;
+                    using (var binaryReader = new BinaryReader(model.Avatar.OpenReadStream()))
+                    {
+                        imageData = binaryReader.ReadBytes((int)model.Avatar.Length);
+                    }
+                    await _graphicsCardService.CreateGraphicsCard(model, imageData);
                 }
                 else
                 {
                     await _graphicsCardService.Edit(model.Id, model);
                 }
+                return RedirectToAction("GetGraphicsCards");
             }
-            return RedirectToAction("GetGraphicsCards");
+            return View();
         }
     }
 }
