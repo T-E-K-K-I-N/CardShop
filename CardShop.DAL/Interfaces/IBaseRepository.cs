@@ -16,7 +16,7 @@ namespace CardShop.DAL.Interfaces
 
         Task<T> Get(int id);
 
-        Task<List<T>> Select();
+        IQueryable<T> GetAll();
 
         Task<bool> Delete(T entity);
 

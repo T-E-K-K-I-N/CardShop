@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -75,5 +76,9 @@ namespace CardShop.Domain.ViewModels.GraphicsCard
         [Required(ErrorMessage = "Отсутствует цена видеокарты")]
         [Range(0, 1000000, ErrorMessage = "Цена видеокарты должна быть в пределе от 0 до 1.000.000 ₽")]
         public decimal Price { get; set; }
+
+        public IFormFile Avatar { get; set; }
+
+        public byte[]? Image { get; set; }
     }
 }

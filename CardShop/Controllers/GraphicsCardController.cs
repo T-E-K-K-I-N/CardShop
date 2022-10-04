@@ -88,6 +88,7 @@ namespace CardShop.Controllers
             {
                 if(model.Id == 0)
                 {
+                    
                      await _graphicsCardService.CreateGraphicsCard(model);
                 }
                 else

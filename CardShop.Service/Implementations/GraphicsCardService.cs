@@ -4,6 +4,7 @@ using CardShop.Domain.Models;
 using CardShop.Domain.Responce;
 using CardShop.Domain.ViewModels.GraphicsCard;
 using CardShop.Service.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +31,7 @@ namespace CardShop.Service.Implementations
             var baseResponse = new BaseResponse<GraphicsCard>();
             try
             {
-                var graphicsCard = await _graphicsCardRepository.Get(id);
+                var graphicsCard = await _graphicsCardRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
                 if (graphicsCard == null)
                 {
                     baseResponse.Description = "Видеокарта не найдена";
@@ -60,9 +61,10 @@ namespace CardShop.Service.Implementations
             var baseResponse = new BaseResponse<GraphicsCard>();
             try
             {
-                var graphicsCard = await _graphicsCardRepository.GetByTitleAsync(title);
+                var graphicsCard = await _graphicsCardRepository.GetAll().FirstOrDefaultAsync(x => x.Title == title);
                 if (graphicsCard == null)
                 {
+
                     baseResponse.Description = "Видеокарта не найдена";
                     baseResponse.StatusCode = Domain.Enum.StatusCode.GraphicsCardNotFound;
                     return baseResponse;
@@ -89,7 +91,7 @@ namespace CardShop.Service.Implementations
             var baseResponse = new BaseResponse<IEnumerable<GraphicsCard>>();
             try
             {
-                var graphicsCards =  await _graphicsCardRepository.Select();
+                var graphicsCards =  await _graphicsCardRepository.GetAll().AllAsync<IEnumerable<GraphicsCard>>();
 
                 if (graphicsCards.Count == 0)
                 {

@@ -77,6 +77,8 @@ namespace CardShop.Domain.Models
         [Range(0, 1000000, ErrorMessage = "Цена видеокарты должна быть в пределе от 0 до 1.000.000 ₽")]
         public decimal Price { get; set; }
 
+        public byte[]? Avatar { get; set; }
+
     }
 
 }
